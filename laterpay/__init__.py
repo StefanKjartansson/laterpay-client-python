@@ -9,11 +9,10 @@ import random
 import re
 import string
 import time
+import warnings
 
 from . import signing
 from . import compat
-
-import warnings
 
 
 _log = logging.getLogger(__name__)
@@ -228,7 +227,8 @@ class LaterPayClient(object):
                      use_jsevents=False,
                      skip_add_to_invoice=False,
                      transaction_reference=None,
-                     consumable=False):
+                     consumable=False,
+                     expires_at=None):
 
         data = copy.copy(item_definition.data)
 
@@ -237,6 +237,9 @@ class LaterPayClient(object):
 
         if consumable:
             data['consumable'] = 1
+
+        if expires_at is not None:
+            data['expires_at'] = expires_at
 
         if transaction_reference:
 
@@ -270,7 +273,8 @@ class LaterPayClient(object):
                     use_jsevents=False,
                     skip_add_to_invoice=False,
                     transaction_reference=None,
-                    consumable=False):
+                    consumable=False,
+                    expires_at=None):
 
         return self._get_web_url(
             item_definition,
@@ -280,7 +284,8 @@ class LaterPayClient(object):
             use_jsevents=use_jsevents,
             skip_add_to_invoice=skip_add_to_invoice,
             transaction_reference=transaction_reference,
-            consumable=consumable)
+            consumable=consumable,
+            expires_at=expires_at)
 
     def get_add_url(self,
                     item_definition,
@@ -289,7 +294,8 @@ class LaterPayClient(object):
                     use_jsevents=False,
                     skip_add_to_invoice=False,
                     transaction_reference=None,
-                    consumable=False):
+                    consumable=False,
+                    expires_at=None):
 
         return self._get_web_url(
             item_definition,
@@ -299,7 +305,8 @@ class LaterPayClient(object):
             use_jsevents=use_jsevents,
             skip_add_to_invoice=skip_add_to_invoice,
             transaction_reference=transaction_reference,
-            consumable=consumable)
+            consumable=consumable,
+            expires_at=expires_at)
 
     def _sign_and_encode(self, params, url, method="GET"):
         return signing.sign_and_encode(self.shared_secret, params, url=url, method=method)
